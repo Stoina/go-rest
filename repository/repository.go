@@ -10,4 +10,5 @@ type Repository interface {
 	Add(jsonInput string)
 	Get(calledURL *url.URL) string
 	Name() string
+	URL() string
 }

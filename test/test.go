@@ -17,9 +17,16 @@ func testRestRepository() {
 
 	restServer := rest.Server{
 		URL:  "rest-test-server",
-		Port: 12345}
+		Port: 12345,
 
-	serverRepo := repo.TestRepository{}
+		Repositories: []repo.Repository{
+			repo.TestRepository{
+				NameString: "Test-One",
+				URLString:  "Test-One"},
+			repo.TestRepository{
+				NameString: "Test-Two",
+				URLString:  "Test-Two"},
+		}}
 
-	restServer.Start(serverRepo)
+	restServer.Start()
 }

@@ -12,22 +12,23 @@ import (
 // Server exported
 // Server ...
 type Server struct {
-	URL  string
 	Port int
+
+	Repositories []repo.Repository
 }
 
 // Start exported
 // Start ....
-func (server *Server) Start(repo repo.Repository) {
+func (server *Server) Start() {
 
-	log.Println("Server url: " + server.URL)
 	log.Println("Server port: " + strconv.Itoa(server.Port))
 
-	log.Println("Repository: " + repo.Name())
+	for _, repo := range server.Repositories {
+		log.Println("Handle Repository: " + repo.Name() + " with URL: " + repo.URL())
 
-	controller := controller.NewController(repo)
-
-	http.Handle("/"+server.URL+"/", controller)
+		controller := controller.NewController(repo)
+		http.Handle("/"+repo.URL()+"/", controller)
+	}
 
 	portString := ":" + strconv.Itoa(server.Port)
 	log.Fatal(http.ListenAndServe(portString, nil))

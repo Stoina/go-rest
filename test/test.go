@@ -16,17 +16,11 @@ func testRestRepository() {
 	log.Println("Test rest server")
 
 	restServer := rest.Server{
-		URL:  "rest-test-server",
 		Port: 12345,
 
 		Repositories: []repo.Repository{
-			repo.TestRepository{
-				NameString: "Test-One",
-				URLString:  "Test-One"},
-			repo.TestRepository{
-				NameString: "Test-Two",
-				URLString:  "Test-Two"},
-		}}
+			repo.NewTestRepository("Test-One", "Test-One"),
+			repo.NewTestRepository("Test-Two", "Test-Two")}}
 
 	restServer.Start()
 }

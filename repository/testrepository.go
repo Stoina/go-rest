@@ -8,8 +8,16 @@ import (
 // TestRepository exported
 // TestRepository ...
 type TestRepository struct {
-	URLString  string
-	NameString string
+	name string
+	url  string
+}
+
+// NewTestRepository exported
+// NewTestRepository ...
+func NewTestRepository(name string, url string) *TestRepository {
+	return &TestRepository{
+		name: name,
+		url:  url}
 }
 
 // Add exported
@@ -28,11 +36,11 @@ func (repo TestRepository) Get(calledURL *url.URL) string {
 // Name exported
 // Name ....
 func (repo TestRepository) Name() string {
-	return repo.NameString
+	return repo.name
 }
 
 // URL exported
 // URL ...
 func (repo TestRepository) URL() string {
-	return repo.URLString
+	return repo.url
 }

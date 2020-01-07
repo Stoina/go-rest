@@ -1,4 +1,4 @@
-package rest
+package restrepo
 
 // RepositoryError exported
 // RepositoryError ...

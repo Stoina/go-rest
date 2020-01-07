@@ -1,28 +1,29 @@
-package rest
+package restrepo
 
 import (
 	"net/url"
 
 	db "github.com/Stoina/go-database"
+	sqlRepoConfig "github.com/Stoina/go-rest/repository/sql/config"
 )
 
 // SQLRepository exported
 // SQLRepository ...
 type SQLRepository struct {
-	name         string
-	url          string
-	dbConnection *db.Connection
-	config       *SQLRepositoryConfig
+	name         	string
+	url          	string
+	dbConnection 	*db.Connection
+	config      	*sqlRepoConfig.SQLRepositoryConfig
 }
 
 // NewSQLRepository exported
 // NewSQLRepository ...
-func NewSQLRepository(name string, url string, dbConn *db.Connection, config *SQLRepositoryConfig) *SQLRepository {
+func NewSQLRepository(name string, url string, dbConn *db.Connection, config *sqlRepoConfig.SQLRepositoryConfig) *SQLRepository {
 	return &SQLRepository{
 		name:         name,
 		url:          url,
 		dbConnection: dbConn,
-		config:       config}
+		config:   config}
 }
 
 // Add exported

@@ -1,4 +1,4 @@
-package rest
+package restrepo
 
 import (
 	"net/url"

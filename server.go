@@ -1,4 +1,4 @@
-package rest
+package restserver
 
 import (
 	"log"
@@ -6,20 +6,15 @@ import (
 	"strconv"
 
 	db "github.com/Stoina/go-database"
-	controller "github.com/Stoina/go-rest/controller"
-	repo "github.com/Stoina/go-rest/repository"
-	config "github.com/Stoina/go-rest/config"
-	testRepo "github.com/Stoina/go-rest/repository/test"
-	testRepoConfig "github.com/Stoina/go-rest/repository/test/config"
-	sqlRepo "github.com/Stoina/go-rest/repository/sql"
-	sqlRepoConfig "github.com/Stoina/go-rest/repository/sql/config"
+	config "github.com/Stoina/go-rest-server/config"
+	repo "github.com/Stoina/go-rest-server/repo"
 )
 
 // Server exported
 // Server ...
 type Server struct {
+	Name string
 	Port int
-
 	Repositories []repo.Repository
 }
 
@@ -32,7 +27,7 @@ func (server *Server) Start() {
 	for _, repo := range server.Repositories {
 		log.Println("Handle Repository: " + repo.Name() + " with URL: " + repo.URL())
 
-		controller := controller.NewController(repo)
+		controller := NewController(repo)
 		http.Handle("/"+repo.URL()+"/", controller)
 	}
 
@@ -42,8 +37,9 @@ func (server *Server) Start() {
 
 // NewServer exported
 // NewServer ...
-func NewServer(port int, repos []repo.Repository) *Server {
+func NewServer(name string, port int, repos []repo.Repository) *Server {
 	return &Server {
+		Name: name,
 		Port: port,
 		Repositories: repos}
 }
@@ -56,31 +52,20 @@ func NewServerFromConfigFile(configFilePath string) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	convertedPort, err := strconv.Atoi(currentConfig.Server.Port)
-	
-	if err != nil {
-		return nil, err
-	}
 	
 	createdServer := &Server {
-		Port: convertedPort,
+		Name: currentConfig.Server.Name,
+		Port: currentConfig.Server.Port,
 		Repositories: createRepositoriesFromConfig(currentConfig)}
 
 	return createdServer, nil
 }
 
 func createRepositoriesFromConfig(c *config.Config) []repo.Repository {
-	repositoriesCount := len(c.TestRepositories) + len(c.SQLRepositories)
-	repositories := make([]repo.Repository, repositoriesCount)
+	repositories := make([]repo.Repository, len(c.SQLRepositories))
 
 	repoCount := 0
-
-	for _, testRepoConf := range c.TestRepositories {
-		repositories[repoCount] = createTestRepositoryFromConfig(testRepoConf)
-		repoCount++
-	}
-
+	
 	for _, sqlRepoConf := range c.SQLRepositories {
 		repositories[repoCount] = createSQLRepositoryFromConfig(sqlRepoConf)
 		repoCount++
@@ -89,11 +74,7 @@ func createRepositoriesFromConfig(c *config.Config) []repo.Repository {
 	return repositories
 }
 
-func createTestRepositoryFromConfig(testRepoConf testRepoConfig.TestRepositoryConfig) *testRepo.TestRepository {
-	return testRepo.NewTestRepository(testRepoConf.Name, testRepoConf.URL)
-}
-
-func createSQLRepositoryFromConfig(sqlRepoConf sqlRepoConfig.SQLRepositoryConfig) *sqlRepo.SQLRepository {
+func createSQLRepositoryFromConfig(sqlRepoConf config.SQLRepositoryConfig) *repo.SQLRepository {
 
 	dbConn, err := db.OpenDBConnection("postgres", "localhost", 5432, "postgres", "steinerj", "postgres")
 
@@ -101,5 +82,5 @@ func createSQLRepositoryFromConfig(sqlRepoConf sqlRepoConfig.SQLRepositoryConfig
 		log.Println(err.Error())
 	}
 
-	return sqlRepo.NewSQLRepository(sqlRepoConf.Name, sqlRepoConf.URL, dbConn, &sqlRepoConf)
+	return repo.NewSQLRepository(sqlRepoConf.Name, sqlRepoConf.URL, dbConn)
 }

@@ -1,12 +1,9 @@
-package restconfig
+package restserver
 
 import (
 	"encoding/json"
 	"errors"
 	"os"
-	
-	testRepoConfig "github.com/Stoina/go-rest/repository/test/config"
-	sqlRepoConfig "github.com/Stoina/go-rest/repository/sql/config"
 )
 
 // Config exported
@@ -14,11 +11,11 @@ import (
 type Config struct {
 	
 	Server struct {
-		Port string `json:"Port"`
+		Name string `json:"Name"`
+		Port int `json:Port`
 	} `json:"RestServer"`
-
-	TestRepositories []testRepoConfig.TestRepositoryConfig `json:"TestRepositories"`
-	SQLRepositories []sqlRepoConfig.SQLRepositoryConfig `json:"SQLRepositories"`
+	
+	SQLRepositories []SQLRepositoryConfig `json:"SQLRepositories"`
 }
 
 // ReadConfigFromFile epxported

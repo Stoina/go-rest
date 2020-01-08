@@ -1,4 +1,4 @@
-package restrepoconfig
+package restserver
 
 // SQLRepositoryConfig exported
 // SQLRepositoryConfig ...

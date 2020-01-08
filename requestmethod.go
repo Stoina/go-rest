@@ -1,8 +1,8 @@
-package rest
+package restserver
 
 // Method exported
 // Method
-type Method int
+type RequestMethod int
 
 // exported
 const (
@@ -29,11 +29,11 @@ var methodNames = [9]string{
 	"CONNECTOR",
 	"TRACE"}
 
-// ParseFromString exported
-// ParseFromString ...
-func ParseFromString(restMethodToParse string) *Method {
+// ParseRequestMethod exported
+// ParseRequestMethod ...
+func ParseToRequestMethod(restMethodToParse string) RequestMethod {
 
-	i := 0
+	i := UNDEFINED
 
 	for arrayIndex, method := range methodNames {
 		if method == restMethodToParse {
@@ -42,6 +42,5 @@ func ParseFromString(restMethodToParse string) *Method {
 		}
 	}
 
-	restMethod := Method(i)
-	return &restMethod
+	return RequestMethod(i)
 }

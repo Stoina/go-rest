@@ -6,7 +6,6 @@ type SQLRepositoryConfig struct {
 	Name string `json:"Name"`
 	URL string `json:"URL"`
 	DatabaseConfig DatabaseConfig `json:"DBSettings"`
-	Statement string
 }
 
 // DatabaseConfig exported
@@ -18,4 +17,3 @@ type DatabaseConfig struct {
 	Username string `json:"Username"`
 	Password string `json:"Password"`
 } 
-

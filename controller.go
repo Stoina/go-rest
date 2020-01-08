@@ -34,14 +34,15 @@ func getRequestMethod(restMethodToParse string) RequestMethod {
 }
 
 func handleRequest(method RequestMethod, rc *Controller, writer http.ResponseWriter, request *http.Request) {
-
+	if method == GET {
+		handleGetRequest(rc, writer, request)
+	}
 }
 
 func handleGetRequest(rc *Controller, writer http.ResponseWriter, request *http.Request) {
 	header := writer.Header()
 	header.Add("content-type", "application/json")
-	// rc.repo.Get()
-	writer.Write([]byte(""))
+	writer.Write([]byte(rc.repo.Get(request.URL).ConvertToJSON()))
 }
 
 func handlePutRequest() {

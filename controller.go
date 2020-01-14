@@ -1,6 +1,8 @@
 package restserver
 
 import (
+	"io/ioutil"
+	"log"
 	"net/http"
 	
 	repo "github.com/Stoina/go-rest-server/repo"
@@ -36,6 +38,8 @@ func getRequestMethod(restMethodToParse string) RequestMethod {
 func handleRequest(method RequestMethod, rc *Controller, writer http.ResponseWriter, request *http.Request) {
 	if method == GET {
 		handleGetRequest(rc, writer, request)
+	} else if method == POST {
+		handlePostRequest(rc, writer, request)
 	}
 }
 
@@ -45,6 +49,32 @@ func handleGetRequest(rc *Controller, writer http.ResponseWriter, request *http.
 	writer.Write([]byte(rc.repo.Get(request.URL).ConvertToJSON()))
 }
 
-func handlePutRequest() {
+func handlePostRequest(rc *Controller, writer http.ResponseWriter, request *http.Request) {
+	
+	content, err := getContentFromRequest(request)
 
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	contentType := getContentTypeFromRequest(request)
+	
+	header := writer.Header()
+	header.Add("content-type", "application/json")
+	writer.Write([]byte(rc.repo.Post(contentType, content).ConvertToJSON()))
+}
+
+func getContentFromRequest(request *http.Request) (string, error) {
+	contentBytes, err := ioutil.ReadAll(request.Body)
+
+	if err != nil {
+		return "", err
+	}
+	
+	return string(contentBytes), nil
+}
+
+func getContentTypeFromRequest(request *http.Request) string {
+	contentType := request.Header.Get("Content-Type")
+	return contentType
 }

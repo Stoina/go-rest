@@ -7,7 +7,7 @@ import (
 // Repository exported
 // Repository ...
 type Repository interface {
-	Post(par string) *RepositoryResult
+	Post(contentType string, content string) *RepositoryResult
 	Put(par string) *RepositoryResult
 	Patch(par string) *RepositoryResult
 	Delete(par string) *RepositoryResult

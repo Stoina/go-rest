@@ -15,6 +15,6 @@ func TestRestServerSQLRepository(t *testing.T) {
 		log.Println(err.Error())
 	}
 
-	restServer := NewServer("TestServer", 8080, []repo.Repository{repo.NewSQLRepository("Golang-Test", "golangtest", dbConn)})
+	restServer := NewServer("TestServer", 8080, []repo.Repository{repo.NewSQLRepository("Golang-Test", "golangtest", dbConn, "")})
 	restServer.Start()
 }

@@ -82,5 +82,5 @@ func createSQLRepositoryFromConfig(sqlRepoConf config.SQLRepositoryConfig) *repo
 		log.Println(err.Error())
 	}
 
-	return repo.NewSQLRepository(sqlRepoConf.Name, sqlRepoConf.URL, dbConn)
+	return repo.NewSQLRepository(sqlRepoConf.Name, sqlRepoConf.URL, dbConn, "")
 }

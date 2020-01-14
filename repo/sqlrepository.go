@@ -50,10 +50,15 @@ func (sqlRepo SQLRepository) Delete(par string) *RepositoryResult {
 // Get exported
 // Get ...
 func (sqlRepo SQLRepository) Get(calledURL *url.URL) *RepositoryResult {
+	return sqlRepo.Query("")
+}
 
+// Query exported
+// Query ...
+func (sqlRepo *SQLRepository) Query(query string) *RepositoryResult {
 	repoResult := RepositoryResult{}
 
-	queryResult, err := sqlRepo.dbConnection.Query("")
+	queryResult, err := sqlRepo.dbConnection.Query(query)
 
 	if err != nil {
 		repoResult.ErrorOccurred = true

@@ -5,6 +5,7 @@ import (
 	"net/url"
 
 	db "github.com/Stoina/go-database"
+	repo "github.com/Stoina/go-rest-server/repo"
 )
 
 // SQLRepository exported
@@ -13,22 +14,22 @@ type SQLRepository struct {
 	name         	string
 	url          	string
 	dbConnection 	*db.Connection
-	tableName		string
+	settings 		*SQLRepositorySettings
 }
 
 // NewSQLRepository exported
 // NewSQLRepository ...
-func NewSQLRepository(name string, url string, dbConn *db.Connection, tableName string) *SQLRepository {
+func NewSQLRepository(name string, url string, dbConn *db.Connection, settings *SQLRepositorySettings) *SQLRepository {
 	return &SQLRepository{
 		name:         name,
 		url:          url,
 		dbConnection: dbConn,
-		tableName: 	  tableName}
+		settings: 	  settings}
 }
 
 // Post exported
 // With a post request to the container resource you can create a new resource.
-func (sqlRepo SQLRepository) Post(contentType string, content string) *RepositoryResult {
+func (sqlRepo SQLRepository) Post(contentType string, content string) *repo.RepositoryResult {
 	if contentType == "application/json" {
 		return insertJSON(sqlRepo, content)
 	}
@@ -38,26 +39,26 @@ func (sqlRepo SQLRepository) Post(contentType string, content string) *Repositor
 
 // Put exported
 // With a put request to the container resource you can overwrite the resource with the representation in the request.
-func (sqlRepo SQLRepository) Put(par string) *RepositoryResult {
+func (sqlRepo SQLRepository) Put(par string) *repo.RepositoryResult {
 	return nil
 }
 
 // Patch exported
 // With the http patch method, individual properties of a resource can be manipulated in a targeted manner.
-func (sqlRepo SQLRepository) Patch(par string) *RepositoryResult {
+func (sqlRepo SQLRepository) Patch(par string) *repo.RepositoryResult {
 	return nil
 }
 
 // Delete exported
 // With this method an existing resource can be deleted
-func (sqlRepo SQLRepository) Delete(par string) *RepositoryResult {
+func (sqlRepo SQLRepository) Delete(par string) *repo.RepositoryResult {
 	return nil
 }
 
 // Get exported
 // Get ...
-func (sqlRepo SQLRepository) Get(calledURL *url.URL) *RepositoryResult {
-	return sqlRepo.Query("select * from" + sqlRepo.tableName)
+func (sqlRepo SQLRepository) Get(calledURL *url.URL) *repo.RepositoryResult {
+	return sqlRepo.Query("select * from " + sqlRepo.settings.TableName)
 }
 
 // Name exported
@@ -74,7 +75,7 @@ func (sqlRepo SQLRepository) URL() string {
 
 // Query exported
 // Query ...
-func (sqlRepo *SQLRepository) Query(query string) *RepositoryResult {
+func (sqlRepo *SQLRepository) Query(query string) *repo.RepositoryResult {
 
 	var resultError error
 	responseMessage := ""
@@ -92,13 +93,13 @@ func (sqlRepo *SQLRepository) Query(query string) *RepositoryResult {
 	}
 	
 	if resultError == nil {
-		return NewRepositoryResult(responseData, false, "", responseMessage, true)
+		return repo.NewRepositoryResult(responseData, false, "", responseMessage, true)
 	} 
 	
-	return NewRepositoryResult(responseData, true, resultError.Error(), responseMessage, false)
+	return repo.NewRepositoryResult(responseData, true, resultError.Error(), responseMessage, false)
 }
 
-func insertJSON(sqlRepo SQLRepository, jsonContent string) *RepositoryResult {
+func insertJSON(sqlRepository SQLRepository, jsonContent string) *repo.RepositoryResult {
 
 	var jsonValues map[string]interface{}
 	json.Unmarshal([]byte(jsonContent), &jsonValues)
@@ -120,16 +121,16 @@ func insertJSON(sqlRepo SQLRepository, jsonContent string) *RepositoryResult {
 	responseMessage := ""
 	responseData := ""
 
-	insertStatement := db.NewInsertStatement(sqlRepo.tableName, columns, values)
-	dbResult, resultError := sqlRepo.dbConnection.Insert(insertStatement)
+	insertStatement := db.NewInsertStatement(sqlRepository.settings.TableName, columns, values)
+	dbResult, resultError := sqlRepository.dbConnection.Insert(insertStatement)
 
 	if resultError == nil {
 		responseData, resultError = dbResult.ConvertToJSON()
 	}
 	
 	if resultError == nil {
-		return NewRepositoryResult(responseData, false, "", responseMessage, true)
+		return repo.NewRepositoryResult(responseData, false, "", responseMessage, true)
 	} 
 	
-	return NewRepositoryResult(responseData, true, resultError.Error(), responseMessage, false)
+	return repo.NewRepositoryResult(responseData, true, resultError.Error(), responseMessage, false)
 }

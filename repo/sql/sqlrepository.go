@@ -58,7 +58,7 @@ func (sqlRepo SQLRepository) Delete(par string) *repo.RepositoryResult {
 // Get exported
 // Get ...
 func (sqlRepo SQLRepository) Get(calledURL *url.URL) *repo.RepositoryResult {
-	return sqlRepo.Query("select * from " + sqlRepo.settings.TableName)
+	return sqlRepo.Query("select * from \"" + sqlRepo.settings.TableName + "\"")
 }
 
 // Name exported

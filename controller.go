@@ -1,11 +1,11 @@
-package restserver
+package restservice
 
 import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	
-	repo "github.com/Stoina/go-rest-server/repo"
+
+	repo "github.com/Stoina/go-rest-repository"
 )
 
 // Controller exported
@@ -23,6 +23,9 @@ func NewController(repo repo.Repository) *Controller {
 // ServeHTTP exported
 // ServeHTTP
 func (controller *Controller) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
+
+	log.Println("New request received...")
+	log.Println("Request method: " + request.Method)
 
 	requestMethod := getRequestMethod(request.Method)
 

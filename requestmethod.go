@@ -1,4 +1,4 @@
-package restserver
+package restservice
 
 // Method exported
 // Method
